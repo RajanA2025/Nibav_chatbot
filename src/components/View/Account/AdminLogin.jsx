@@ -152,6 +152,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../Header";
 import axios from "axios";
+import ForgotPassword from "./ForgotPassword";
 
 const API_URL = "http://65.0.113.12:8000";
 
@@ -172,9 +173,9 @@ const AdminLogin = () => {
 const [role, setRole] = useState("")
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    if (error) message.error("Something went wrong while fetching data.");
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) message.error("Something went wrong while fetching data.");
+  // }, [error]);
 
   const validateEmail = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -188,7 +189,6 @@ const [role, setRole] = useState("")
       valid = false;
     }
     if (!input.password || input.password.length < 6) {
-      // Password minimum length validation example (6 chars)
       newStatus.password = "error";
       valid = false;
     }
@@ -203,38 +203,76 @@ const [role, setRole] = useState("")
     setStatus({ inputs: { ...status.inputs, [name]: "" } });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateInput()) return;
+
+  //   try {
+  //     const formData = new URLSearchParams();
+  //     formData.append("email", input.email);
+  //     formData.append("password", input.password);
+
+  //     await axios.post(`${API_URL}/admin/login`, formData,
+  //        {
+  //         headers: {
+  //           accept: 'application/json',
+  //         },
+  //     }
+  //   ).then((res) => {
+  //       message.success("Login successful!");
+  //       localStorage.setItem("Role",res.data.role )
+  //       localStorage.setItem("Auth" , "true")
+  //       setRole(res.data.role)
+  //       if(res.data.role == "Admin"){
+  //       navigate('/admin/dashboard');}
+  //       else{
+  //         navigate('/sales/dashboard')
+  //       }
+  //     });    
+
+  //   } catch (err) {
+  //     // console.error("Login error:", err);
+  //     message.error("Login failed. Please Check your credentials.");
+  //     setError(true);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!validateInput()) return;
-
+  
     try {
-      const formData = new URLSearchParams();
-      formData.append("email", input.email);
-      formData.append("password", input.password);
-
-      await axios.post(`${API_URL}/admin/login`, formData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }).then((res) => {
-        message.success("Login successful!");
-        localStorage.setItem("Role",res.data.role )
-         
-        setRole(res.data.role)
-        if(res.data.role == "Admin"){
-        navigate('/admin/dashboard');}
-        else{
-          navigate('/sales/dashboard')
+      const res = await axios.post(
+        `${API_URL}/admin/login`,
+        '', // IMPORTANT: empty string body to match `-d ''` in curl
+        {
+          headers: {
+            accept: 'application/json',
+          },
+          params: {
+            email: input.email,
+            password: input.password,
+          },
         }
-      });
-
+      );
+  
+      message.success("Login successful!");
+      localStorage.setItem("Role", res.data.role);
+      localStorage.setItem("Auth", "true");
+      setRole(res.data.role);
+  
+      if (res.data.role.toLowerCase() === "admin") {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/sales/dashboard');
+      }
     } catch (err) {
-      console.error("Login error:", err);
-      message.error("Login failed. Check your credentials.");
+      message.error("Login failed. Please check your credentials.");
       setError(true);
     }
   };
+  
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -291,6 +329,7 @@ const [role, setRole] = useState("")
               </Button>
             </Form.Item>
           </Form>
+          {/* <ForgotPassword/> */}
         </Card>
       </div>
     </>

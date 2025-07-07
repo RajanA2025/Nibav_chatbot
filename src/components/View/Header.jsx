@@ -73,11 +73,14 @@ function Header() {
       >
         <a className="navbar-brand d-flex align-items-center" href="/#">
           <img
-            src={logo}
+            // src={logo}
+            src="https://www.nibavlift.in/residential-elevators/wp-content/uploads/2023/12/nibav-logo.svg"
+            
             alt="logo"
-            style={{ width: "1.2rem", height: "1.2rem", objectFit: "cover" }}
+            // style={{ width: "1.2rem", height: "1.2rem", objectFit: "cover" }}
+            width={95}
           />
-          <p className="m-0 ms-2">Nibav_Management</p>
+          {/* <p className="m-0 ms-2">Nibav_Management</p> */}
         </a>
         <button
           className="navbar-toggler"

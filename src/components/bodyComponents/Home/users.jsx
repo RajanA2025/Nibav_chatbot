@@ -1,280 +1,279 @@
-// import React, { useEffect, useState } from 'react';
-// import { Table, Button, message, Modal, DatePicker, Spin, Input } from 'antd';
-// import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
-// import axios from 'axios';
-// import moment from 'moment';
-
-// const { RangePicker } = DatePicker;
-
-// const Users = () => {
-//   const [users, setUsers] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [selectedUserEmail, setSelectedUserEmail] = useState(null);
-//   const [dateRange, setDateRange] = useState([]);
-//   const [historyData, setHistoryData] = useState([]);
-//   const [historyLoading, setHistoryLoading] = useState(false);
-//   const [search, setSearch] = useState('');
-
-//   const API_URL = "http://65.0.113.12:8000";
-
-//   const fetchUsers = async () => {
-//     setLoading(true);
-//     try {
-//       const res = await axios.get(`${API_URL}/users/list`);
-//       setUsers(res.data.users || []);
-//     } catch (error) {
-//       message.error('Failed to fetch users');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const openHistoryModal = (email) => {
-//     setSelectedUserEmail(email);
-//     setIsModalOpen(true);
-//     setHistoryData([]);
-//     setDateRange([]);
-//     fetchChatHistory()
-//   };
-
-//   const fetchChatHistory = async () => {
-//     if (!selectedUserEmail) return message.warning("User email not available.");
-
-//     setHistoryLoading(true);
-//     try {
-//       const res = await axios.get(`${API_URL}/users/history`, {
-//         params: { email: selectedUserEmail },
-//       });
-//       setHistoryData(res.data.history || []);
-//     } catch (error) {
-//       message.error("Failed to fetch chat history");
-//     } finally {
-//       setHistoryLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchUsers();
-//   }, []);
-
-//   // Filtered data based on search input
-//   const filteredUsers = users.filter((u) =>
-//     u.email.toLowerCase().includes(search.toLowerCase()) ||
-//     u.phone.toLowerCase().includes(search.toLowerCase())
-//   );
-
-//   const columns = [
-//     { title: 'Email', dataIndex: 'email', key: 'email' },
-//     { title: 'Phone Number', dataIndex: 'phone', key: 'phone' },
-//     {
-//       title: 'Action',
-//       key: 'action',
-//       render: (_, record) => (
-//         <Button icon={<EyeOutlined />} onClick={() => openHistoryModal(record.email)}>
-//           Chat History
-//         </Button>
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div style={{ padding: '2rem' }}>
-//       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-//         <h2>User List</h2>
-//         <Input
-//           placeholder="Search by email or phone"
-//           prefix={<SearchOutlined />}
-//           value={search}
-//           onChange={(e) => setSearch(e.target.value)}
-//           style={{ width: 300 }}
-//         />
-//       </div>
-
-//       <Table
-//         columns={columns}
-//         dataSource={filteredUsers.map((u, i) => ({ key: i, ...u }))}
-//         loading={loading}
-//         bordered
-//       />
-
-//       <Modal
-//         title={`Chat History for ${selectedUserEmail}`}
-//         open={isModalOpen}
-//         onCancel={() => setIsModalOpen(false)}
-//         // onOk={fetchChatHistory}
-//         // okText="Fetch History"
-//       >
-//         {/* <p>Select date range:</p>
-//         <RangePicker
-//           style={{ marginBottom: "1rem", width: "100%" }}
-//           onChange={(dates) => setDateRange(dates)}
-//         /> */}
-//         {historyLoading ? (
-//           <Spin />
-//         ) : (
-//           <ul>
-//             {historyData.length > 0 ? (
-//               historyData.map((msg, i) => (
-//                 <li key={i}>
-//                   <strong>👤User:</strong> {msg.user_query}
-//                 </li>
-//               ))
-//             ) : (
-//               <p>No chat history available.</p>
-//             )}
-//           </ul>
-//         )}
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default Users;
-
-
 import React, { useEffect, useState } from 'react';
-import { Table, Button, message, Modal, DatePicker, Spin, Input } from 'antd';
+import { useAppContext } from '../../../context/AppContext';
+import {
+  Table,
+  Button,
+  message,
+  Modal,
+  DatePicker,
+  Spin,
+  Input,
+  Select,
+  Checkbox,
+  Space,
+  Tag,
+} from 'antd';
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserEmail, setSelectedUserEmail] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
-
   const [search, setSearch] = useState('');
   const [dateRange, setDateRange] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [bulkStatus, setBulkStatus] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const { fetchchatUsers, Chatusers } = useAppContext();
+  const [localUsers, setLocalUsers] = useState([]);
 
-  const API_URL = "http://65.0.113.12:8000";
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${API_URL}/users/list`);
-      setUsers(res.data.users || []);
-    } catch (error) {
-      message.error('Failed to fetch users');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const API_URL = 'http://65.0.113.12:8000';
 
   useEffect(() => {
-    fetchUsers();
+    fetchchatUsers();
   }, []);
 
-  const openHistoryModal = (email) => {
-    setSelectedUserEmail(email);
+  useEffect(() => {
+    setLocalUsers(Chatusers);
+  }, [Chatusers]);
+
+  const openHistoryModal = (user) => {
+    setSelectedUser(user);
     setIsModalOpen(true);
     setChatHistory([]);
-    fetchChatHistory()
+    fetchChatHistory(user.email);
   };
 
-  const fetchChatHistory = async () => {
-    if (!selectedUserEmail) return;
+  const fetchChatHistory = async (email) => {
     setHistoryLoading(true);
     try {
       const res = await axios.get(`${API_URL}/users/history`, {
-        params: { email: selectedUserEmail },
+        params: { email },
       });
       setChatHistory(res.data.history || []);
     } catch (error) {
-      message.error("Failed to fetch chat history");
+      message.error('Failed to fetch chat history');
     } finally {
       setHistoryLoading(false);
     }
   };
 
-  //  Filter logic: search + date range
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.phone.toLowerCase().includes(search.toLowerCase());
+  const handleInlineEdit = (email, key, value) => {
+    const updated = localUsers.map((user) =>
+      user.email === email ? { ...user, [key]: value } : user
+    );
+    setLocalUsers(updated);
+  };
 
+  const handleUpdate = async (record) => {
+    try {
+      const payload = new URLSearchParams({
+        email: record.email,
+        status: record.status || 'Pending',
+        description: record.description || '',
+      });
+      await axios.put(`${API_URL}/Chatuser/update`, payload, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+      message.success(`User Data Updated Successfully`);
+      fetchchatUsers();
+    } catch (error) {
+      message.error('Failed to update user');
+    }
+  };
+
+  const handleBulkUpdate = async () => {
+    try {
+      await Promise.all(
+        selectedRowKeys.map((email) => {
+          const user = localUsers.find((u) => u.email === email);
+          const payload = new URLSearchParams({
+            email: user.email,
+            status: bulkStatus,
+            description: user.description || '',
+          });
+          return axios.put(`${API_URL}/Chatuser/update`, payload, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          });
+        })
+      );
+      message.success('Selected users updated successfully');
+      setSelectedRowKeys([]);
+      fetchchatUsers();
+    } catch (error) {
+      message.error('Bulk update failed');
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Pending':
+        return 'red';
+      case 'Inprogress':
+        return 'blue';
+      case 'Completed':
+        return 'green';
+      default:
+        return 'default';
+    }
+  };
+
+  const filteredUsers = localUsers.filter((user) => {
+    const matchesSearch =
+      user.email?.toLowerCase().includes(search.toLowerCase()) ||
+      user.phone?.toLowerCase().includes(search.toLowerCase());
+  
     const matchesDate =
       dateRange.length === 0 ||
-      (
-        user.createdDate &&
-        moment(user.createdDate).isBetween(dateRange[0], dateRange[1], 'day', '[]')
-      );
-
-    return matchesSearch && matchesDate;
+      (user.chat_date &&
+        moment(user.chat_date, "DD/MM/YYYY").isSameOrAfter(moment(dateRange[0]).startOf('day')) &&
+        moment(user.chat_date, "DD/MM/YYYY").isSameOrBefore(moment(dateRange[1]).endOf('day')));
+  
+    const matchesStatus = !statusFilter || user.status === statusFilter;
+  
+    return matchesSearch && matchesDate && matchesStatus;
   });
 
   const columns = [
     { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Phone Number', dataIndex: 'phone', key: 'phone' },
+    { title: 'Phone', dataIndex: 'phone', key: 'phone' },
     {
-      title: 'Created Date',
-      dataIndex: 'last_interaction_time',
-      key: 'last_interaction_time',
-      // render: (date) => moment(date).format('YYYY-MM-DD'),
+      title: 'Date',
+      dataIndex: 'chat_date',
+      key: 'chat_date',
+      render: (date) => (date ? moment(date).format('YYYY-MM-DD') : 'N/A'),
     },
     {
-      title: 'Action',
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => (
+        <Tag color={getStatusColor(record.status)}>{record.status || 'Pending'}</Tag>
+      ),
+    },
+    {
+      title: 'Change Status',
+      render: (_, record) => (
+        <Select
+          value={record.status || 'Pending'}
+          style={{ width: 140 }}
+          onChange={(value) => handleInlineEdit(record.email, 'status', value)}
+        >
+          <Option value="Pending">Pending</Option>
+          <Option value="Inprogress">InProgress</Option>
+          <Option value="Completed">Completed</Option>
+        </Select>
+      ),
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+      render: (text, record) => (
+        <Input
+          value={record.description || ''}
+          placeholder="Add description..."
+          onChange={(e) => handleInlineEdit(record.email, 'description', e.target.value)}
+        />
+      ),
+    },
+    {
+      title: 'Actions',
       key: 'action',
       render: (_, record) => (
-        <Button icon={<EyeOutlined />} onClick={() => openHistoryModal(record.email)}>
-          Chat History
-        </Button>
+        <Space>
+          <Button icon={<EyeOutlined />} onClick={() => openHistoryModal(record)}>
+            History
+          </Button>
+          <Button type="primary" onClick={() => handleUpdate(record)}>
+            Update
+          </Button>
+        </Space>
       ),
     },
   ];
 
   return (
     <div style={{ padding: '2rem' }}>
-         <h2>Chat Users</h2>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, gap: '1rem', flexWrap: 'wrap' }}>
+      <h2>Chat Users</h2>
+
+      <Space style={{ marginBottom: 16 }} wrap>
         <Input
           placeholder="Search email or phone"
           prefix={<SearchOutlined />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ width: 300 }}
+          style={{ width: 250 }}
         />
-        <RangePicker
-          onChange={(dates) => setDateRange(dates || [])}
-          style={{ width: 300 }}
-        />
-      </div>
+        <RangePicker onChange={(dates) => setDateRange(dates || [])} />
+        <Select
+          placeholder="Filter by status"
+          allowClear
+          value={statusFilter || undefined}
+          onChange={(val) => setStatusFilter(val)}
+          style={{ width: 200 }}
+        >
+          <Option value="Pending">Pending</Option>
+          <Option value="Inprogress">InProgress</Option>
+          <Option value="Completed">Completed</Option>
+        </Select>
+        <Select
+          value={bulkStatus}
+          placeholder="Set status for selected"
+          onChange={(val) => setBulkStatus(val)}
+          style={{ width: 200 }}
+        >
+          <Option value="Pending">Pending</Option>
+          <Option value="Inprogress">InProgress</Option>
+          <Option value="Completed">Completed</Option>
+        </Select>
+        <Button type="primary" disabled={!bulkStatus || selectedRowKeys.length === 0} onClick={handleBulkUpdate}>
+          Update Selected
+        </Button>
+      </Space>
 
       <Table
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+          getCheckboxProps: (record) => ({ disabled: !record.email }),
+        }}
         columns={columns}
-        dataSource={filteredUsers.map((u, i) => ({ key: i, ...u }))}
+        dataSource={filteredUsers.map((u, i) => ({ key: u.email, ...u }))}
         loading={loading}
         bordered
+        pagination={{ pageSize: 10 }}
       />
 
       <Modal
-        title={`Chat History for ${selectedUserEmail}`}
+        title={`Chat History - ${selectedUser?.email}`}
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        // onOk={fetchChatHistory}
-        // okText="Fetch History"
+        footer={null}
       >
         {historyLoading ? (
           <Spin />
         ) : (
-          <ul>
+          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
             {chatHistory.length > 0 ? (
-              chatHistory.map((msg, i) => (
-                <li key={i}>
-                  <strong>👤User:</strong> {msg.user_query}
-                </li>
-              ))
+              <ul style={{ paddingLeft: '20px' }}>
+                {chatHistory.map((msg, i) => (
+                  <li key={i} style={{ marginBottom: '10px' }}>
+                    <strong>👤 User:</strong> {msg.user_query}
+                  </li>
+                ))}
+              </ul>
             ) : (
               <p>No chat history available.</p>
             )}
-          </ul>
+          </div>
         )}
       </Modal>
     </div>

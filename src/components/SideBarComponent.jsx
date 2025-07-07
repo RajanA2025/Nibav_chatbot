@@ -48,14 +48,14 @@ export default function SideBarComponent() {
         component: <HomeOutlined fontSize="medium" color="primary" />,
       },
       {
-        title: "Activity",
+        title: "KnowledgeBase",
         component: <DatabaseOutlined fontSize="medium" color="primary" />,
       },
       {
         title: "ChatUsers",
         component: <TeamOutlined fontSize="medium" color="primary" />,
       },
-      ...(Role === "Admin"
+      ...(Role === "admin"
         ? [
             {
               title: "Users",

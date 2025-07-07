@@ -41,7 +41,7 @@ export default function NavBarComponent() {
     setNotificationAnchorEl(event.currentTarget);
   };
   const Role =localStorage.getItem("Role")
-  const Logout = () => {
+  const Signout = () => {
     axios.post(`${API_URL}/admin/logout`, null, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -51,6 +51,7 @@ export default function NavBarComponent() {
       message.success("Logout successful!");
       localStorage.removeItem("Role")
       localStorage.removeItem("emailId")
+      localStorage.removeItem("Auth")
 
       navigate('/');  // Ensure your route is correctly defined in your router
     })
@@ -67,7 +68,7 @@ export default function NavBarComponent() {
   };
 
   const handleLogout = () => {
-    alert("Logout");
+   
     navigate("/");
   };
 
@@ -127,46 +128,47 @@ export default function NavBarComponent() {
                     <MenuItem>Notification number 3</MenuItem>
                   </Menu> */}
                   <IconButton
-                    // onClick={handleAvatarClicked}
-                    onClick={Logout}
+                    onClick={handleAvatarClicked}
+                    // onClick={Logout}
                     size="small"
                     sx={{ mx: 2 }}
                     aria-haspopup="true"
                   >
                     <Tooltip title="LogOut">
-                      <Avatar sx={{ width: 32, height: 32 }}>Z</Avatar>
+                    <Typography fontFamily={"Inter"} style={{color:"white"}}>Hi Admin!</Typography>
                     </Tooltip>
                   </IconButton>
-                  <Typography fontFamily={"Inter"}>Rajan</Typography>
+                  
                 </Box>
 
-                {/* <Menu
+                <Menu
                   open={open}
                   anchorEl={anchorEl}
                   onClick={handleClose}
                   onClose={handleClose}
                 >
-                  <MenuItem>
-                    <ListItemIcon>
+                  <MenuItem onClick={()=>navigate("/admin/Profile")}>
+                    <ListItemIcon >
                       <AccountCircleOutlined fontSize="small" />
                     </ListItemIcon>
                     Profile
                   </MenuItem>
                   <Divider />
-                  <MenuItem>
+                  {/* <MenuItem>
                     <ListItemIcon>
                       <Settings fontSize="small" />
                     </ListItemIcon>
                     Settings
-                  </MenuItem>
-                  <MenuItem component={Link} onclick={Logouted}>
-                  <MenuItem >
-  <ListItemIcon onClick={Logout}>
+                  </MenuItem> */}
+                  {/* <MenuItem component={Link} onclick={Logouted}> */}
+                  <MenuItem  onClick={Signout}>
+  <ListItemIcon  >
     <Logout fontSize="small"  />
   </ListItemIcon>
   Logout
+  
 </MenuItem>
-                </Menu> */}
+                </Menu>
               </Box>
             </Container>
           </AppBar>

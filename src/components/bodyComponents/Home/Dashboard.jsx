@@ -1,27 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Typography, Table, Statistic } from 'antd';
+import { Row, Col, Card, Typography, Table, Statistic, Button } from 'antd';
 import { UserOutlined, MessageOutlined, LineChartOutlined, InfoCircleOutlined ,FileOutlined} from '@ant-design/icons';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-
-const { Title } = Typography;
+import { useAppContext } from '../../../context/AppContext';
 
 const Dashboard = () => {
   // Sample data for stats and charts
+  const { Title } = Typography;
+  const { fetchUsers,fetchFiles, files,Chatusers,DailyChats,fetchChats,questions ,weekChats,ChatsList,fetchchatUsers,fetchQueestions} = useAppContext();
+  useEffect(() => {
+    
+    fetchchatUsers();
+      fetchFiles();
+      fetchChats();
+      fetchQueestions()
+    
+    const interval = setInterval(() => {
+      fetchchatUsers();
+      fetchFiles();
+      fetchChats();
+      fetchQueestions()
+    }, 30000);
+  
+   
+    return () => clearInterval(interval);
+  }, []);
+    const [chartPeriod, setChartPeriod] = useState('weekly'); // 'weekly' or 'monthly'
+
+  // Function to format date to dd-mm-yyyy
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const topQuestions = [
     { key: 1, question: "What is warranty?", count: 34 },
     { key: 2, question: "What is noise?", count: 21 },
     { key: 3, question: "What is AI?", count: 15 },
   ];
 
-  const chatTrendData = [
-    { date: 'Jun 24', chats: 20 },
-    { date: 'Jun 25', chats: 40 },
-    { date: 'Jun 26', chats: 35 },
-    { date: 'Jun 27', chats: 55 },
-    { date: 'Jun 28', chats: 60 },
-    { date: 'Jun 29', chats: 48 },
-    { date: 'Jun 30', chats: 70 },
-  ];
+  // Use real API data
+  const weeklyChatTrendData = ChatsList.slice(0, 4).map(item => ({
+    date: formatDate(item.date),
+    chats: item.total_chats,
+  }));
+
+  const monthlyChatTrendData = ChatsList.slice(0, 7).map(item => ({
+    date: formatDate(item.date),
+    chats: item.total_chats,
+  }));
+
+  const chatTrendData = chartPeriod === 'weekly' ? weeklyChatTrendData : monthlyChatTrendData;
 
   return (
     <div style={{ padding: '24px' }}>
@@ -43,7 +75,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Total ChatUsers"
-              value={45}
+              value={Chatusers.length}
               prefix={<UserOutlined />}
             />
           </Card>
@@ -52,7 +84,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Total Uploads Files"
-              value={28}
+              value={files.length}
               prefix={<FileOutlined />}
               
             />
@@ -62,7 +94,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Total Chats"
-              value={1580}
+              value={weekChats+DailyChats}
               prefix={<MessageOutlined />}
             />
           </Card>
@@ -71,8 +103,8 @@ const Dashboard = () => {
         <Col xs={24} sm={12} md={6}>
           <Card>
             <Statistic
-              title="Today’s Chats"
-              value={120}
+              title="Today's Chats"
+              value={ DailyChats}
               prefix={<LineChartOutlined />}
               valueStyle={{ color: '#3f8600' }}
             />
@@ -81,7 +113,28 @@ const Dashboard = () => {
       </Row>
 
       {/* Chat Trend Chart */}
-      <Card title="Chat Activity - Last 7 Days" style={{ marginTop: 24 }}>
+      <Card 
+        title="Chat Activity" 
+        style={{ marginTop: 24 }}
+        extra={
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button 
+              type={chartPeriod === 'weekly' ? 'primary' : 'default'}
+              size="small"
+              onClick={() => setChartPeriod('weekly')}
+            >
+              Weekly
+            </Button>
+            <Button 
+              type={chartPeriod === 'monthly' ? 'primary' : 'default'}
+              size="small"
+              onClick={() => setChartPeriod('monthly')}
+            >
+              Monthly
+            </Button>
+          </div>
+        }
+      >
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chatTrendData} margin={{ top: 5, right: 30, bottom: 5, left: 0 }}>
             <XAxis dataKey="date" />
@@ -100,7 +153,7 @@ const Dashboard = () => {
             { title: 'Question', dataIndex: 'question', key: 'question' },
             { title: 'Asked Count', dataIndex: 'count', key: 'count' },
           ]}
-          dataSource={topQuestions}
+          dataSource={questions.slice(0,5)}
           pagination={false}
         />
       </Card>
