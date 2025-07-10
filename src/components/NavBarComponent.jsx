@@ -25,7 +25,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 
-const API_URL = "http://65.0.113.12:8000";
+const API_URL = "http://3.110.224.17:8000";
 
 export default function NavBarComponent() {
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
@@ -40,6 +40,7 @@ export default function NavBarComponent() {
   const handleNotificationClicked = (event) => {
     setNotificationAnchorEl(event.currentTarget);
   };
+
   const Role =localStorage.getItem("Role")
   const Signout = () => {
     axios.post(`${API_URL}/admin/logout`, null, {
@@ -56,7 +57,6 @@ export default function NavBarComponent() {
       navigate('/');  // Ensure your route is correctly defined in your router
     })
     .catch((err) => {
-      console.error("Logout error:", err);
       message.error("Logout failed!");
     });
   };
@@ -98,7 +98,15 @@ export default function NavBarComponent() {
                     textDecoration: "none",
                   }}
                 >
-                  Nibav
+                  <img
+          
+            src="https://www.nibavlifts.com/wp-content/uploads/2025/01/Nibav-Lifts-Logo.webp"
+            
+            alt="logo"
+         
+            width={95}
+          />
+                  {/* Nibav */}
                 </Typography>
 
                 <Box
@@ -135,7 +143,7 @@ export default function NavBarComponent() {
                     aria-haspopup="true"
                   >
                     <Tooltip title="LogOut">
-                    <Typography fontFamily={"Inter"} style={{color:"white"}}>Hi Admin!</Typography>
+                    <Typography fontFamily={"Inter"} style={{color:"white"}}>{Role === "admin" ?"Hi Admin!" : "Hi User!"}</Typography>
                     </Tooltip>
                   </IconButton>
                   

@@ -25,20 +25,20 @@ const LandingPage = () => {
       <section className="container mt-5">
         <div className="row align-items-center">
           <div className="col-md-6 text-center text-md-start">
-            <h1 className="fw-bold mb-3">The Best Learning Platform</h1>
-            <p className="fs-5 mb-4">Learn, Grow, Achieve – Together.</p>
-            <Link to="/account/login">
+            <h1 className="fw-bold mb-3">Smart Lift Booking System</h1>
+            <p className="fs-5 mb-4">Book. Ride. Track. Hassle-Free Elevator Access.</p>
+            <Link to="/">
               <Button type="primary" size="large">Get Started</Button>
             </Link>
           </div>
           <div className="col-md-6 text-center">
-            <img src={lms} alt="Learning" className="img-fluid" />
+            <img src="https://www.domesticliftsusa.com/wp-content/uploads/2023/12/rendering-living-room-with-couch-coffee-table-min-scaled.jpg" alt="Lift Booking" className="img-fluid" />
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mt-5">
+      {/* <section className="container mt-5">
         <div className="row text-center">
           <div className="col-md-3 col-6 mb-3">
             <Button icon={<FaHandPointUp />} className="w-100">User-Friendly</Button>
@@ -53,43 +53,42 @@ const LandingPage = () => {
             <Button icon={<IoIosSpeedometer />} className="w-100">Fast Speed</Button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Services Section */}
       <section className="container mt-5">
         {[{
-          title: "For Lecturers",
+          title: "Series iii Max Domestic Lifts",
           points: [
-            "Course Creation and Management",
-            "Assignment and Assessment Management",
-            "Grading and Analytics",
-            "Attendance Tracking"
+            "Introducing the Nibav Lifts Series III Max, a premier residential elevator designed for discerning clients and distributed in the USA by Domestic Lifts USA, an authorized distributor of Nibav Lifts Inc. This addition to our Series III lineup features spacious customizable cabins accommodating up to 240 kg/529 lbs, ensuring complete wheelchair accessibility and enhancing both home mobility and sophistication. With esteemed TÜV SÜD, CE, and SIL-3 certifications, the Series III Max demonstrates exceptional design and safety. Integrating Nibav Lift technology and advanced safety systems, it seamlessly combines aesthetics with innovation, Versatile and capable of up to 4 Stops (G+3) with a maximum travel height of 13,500mm, this model sets a new benchmark for in-home domestic lifts. These space-saving lifts redefine modern home mobility, exclusively distributed in the USA by Domestic Lifts USA. Choosing the Series III Max means embracing a new era of home accessibility and luxury. Elevate your living experience with this symbol of sophistication and the future of domestic lifts – the Series III Max by Nibav Lifts, available through Domestic Lifts USA."
           ],
-          img: teacher,
+          img: "https://www.domesticliftsusa.com/wp-content/uploads/2023/12/Edit-Image-47-min-1-scaled.jpg",
           reverse: false,
-        },
-        {
-          title: "For Students",
-          points: [
-            "Course Access and Navigation",
-            "Assignment Submission",
-            "Gradebook and Progress Tracking",
-            "Resource Library"
-          ],
-          img: student,
-          reverse: true,
-        },
-        {
-          title: "For Admins",
-          points: [
-            "User Management",
-            "Course Creation and Organization",
-            "Data Analytics and Reporting",
-            "Content Management"
-          ],
-          img: admin,
-          reverse: false,
-        }].map(({ title, points, img, reverse }, i) => (
+        }
+        // {
+        //   title: "For Students",
+        //   points: [
+        //     "Course Access and Navigation",
+        //     "Assignment Submission",
+        //     "Gradebook and Progress Tracking",
+        //     "Resource Library"
+        //   ],
+        //   img: student,
+        //   reverse: true,
+        // }
+        // ,
+        // {
+        //   title: "For Admins",
+        //   points: [
+        //     "User Management",
+        //     "Course Creation and Organization",
+        //     "Data Analytics and Reporting",
+        //     "Content Management"
+        //   ],
+        //   img: admin,
+        //   reverse: false,
+        // }
+      ].map(({ title, points, img, reverse }, i) => (
           <div className={`row align-items-center my-4 ${reverse ? "flex-row-reverse" : ""}`} key={i}>
             <div className="col-md-6 text-center">
               <img src={img} alt={title} className="img-fluid" />
@@ -105,7 +104,7 @@ const LandingPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="container my-5 py-4 border rounded text-center bg-light">
+      {/* <section className="container my-5 py-4 border rounded text-center bg-light">
         <div className="row">
           {[
             { count: "200+", label: "Courses" },
@@ -119,7 +118,7 @@ const LandingPage = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <FloatingChatBot/>
       <Footer mt="5rem" />

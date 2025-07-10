@@ -19,7 +19,7 @@ import ProtectedRoute from ".././src/context/ProtectedRoute";
 import NotFound from "./components/View/NotFound";
 const RootComponent = lazy(() => import("./components/RootComponent"));
 const RootPage = lazy(() => import("./components/RootPage"));
-const Home = lazy(() => import("./components/bodyComponents/home/Home"));
+// const Home = lazy(() => import("./components/bodyComponents/home/Home"));
 const Dashboard =lazy(()=>import("./components/bodyComponents/Home/Dashboard"))
 const LandingPage = lazy(() => import("./components/View/LandingPage"));
 const SignIn = lazy(() => import("./components/View/Account/Login")); 
@@ -173,6 +173,7 @@ const router = createBrowserRouter(
             <RootComponent />
           </Suspense>
         }>
+          <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={
             <Suspense fallback={<div><Loader /></div>}>
               <Dashboard/>

@@ -27,7 +27,7 @@ const ViewUsers = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const API_URL = "http://65.0.113.12:8000";
+  const API_URL = "http://3.110.224.17:8000";
   const { fetchUsers ,users} = useAppContext();
   
 const Role =localStorage.getItem("Role")
@@ -63,7 +63,7 @@ const Role =localStorage.getItem("Role")
       params.append('name', values.name);
       params.append('email', values.email);
       params.append('password', values.password);
-      params.append('role', Role);
+      params.append('role', "sales");
 
 
       const headers = {
@@ -135,14 +135,14 @@ const Role =localStorage.getItem("Role")
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
-          {/* {record.role === "sales" && (
+          {record.role === "sales" && (
             <Button
               type="default"
               onClick={() => handleSendEmail(record)}
             >
               Send Email
             </Button>
-          )} */}
+          )}
         </Space>
       ),
     },

@@ -35,7 +35,6 @@ export default function SideBarComponent() {
   const location = useLocation();
   const currentPage = location.pathname;
   const Role = localStorage.getItem("Role");
-  console.log("Role",Role);
   // const styles = theme => ({
   //     listItemText:{
   //         fontSize:'0.7em',//Insert your required size

@@ -33,8 +33,9 @@ const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const { fetchchatUsers, Chatusers } = useAppContext();
   const [localUsers, setLocalUsers] = useState([]);
+  const Role = localStorage.getItem("Role");
 
-  const API_URL = 'http://65.0.113.12:8000';
+  const API_URL = 'http://3.110.224.17:8000';
 
   useEffect(() => {
     fetchchatUsers();
@@ -141,7 +142,7 @@ const Users = () => {
     return matchesSearch && matchesDate && matchesStatus;
   });
 
-  const columns = [
+  const baseColumns = [
     { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
     {
@@ -151,24 +152,26 @@ const Users = () => {
       render: (date) => (date ? moment(date).format('YYYY-MM-DD') : 'N/A'),
     },
     {
+      title: 'Summary',
+      dataIndex: 'summary',
+      key: 'summary'
+     
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => (
-        <Tag color={getStatusColor(record.status)}>{record.status || 'Pending'}</Tag>
-      ),
-    },
-    {
-      title: 'Change Status',
-      render: (_, record) => (
         <Select
-          value={record.status || 'Pending'}
-          style={{ width: 140 }}
-          onChange={(value) => handleInlineEdit(record.email, 'status', value)}
+          value={record.status}
+          // Admin: always enabled. Sales: disabled if completed.
+          disabled={Role === "sales" && record.status === "completed"}
+          onChange={value => handleInlineEdit(record.email, 'status', value)}
+          style={{ width: 120 }}
         >
-          <Option value="Pending">Pending</Option>
-          <Option value="Inprogress">InProgress</Option>
-          <Option value="Completed">Completed</Option>
+          <Option value="pending">Pending</Option>
+          <Option value="in_progress">In Progress</Option>
+          <Option value="completed">Completed</Option>
         </Select>
       ),
     },
@@ -199,6 +202,17 @@ const Users = () => {
       ),
     },
   ];
+
+  const adminColumns = [
+    ...baseColumns,
+    {
+      title: 'UpdatedBy',
+      dataIndex: 'Updated_By',
+      key: 'Updated_By'
+    }
+  ];
+
+  const columns = Role === "admin" ? adminColumns : baseColumns;
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -246,7 +260,7 @@ const Users = () => {
           getCheckboxProps: (record) => ({ disabled: !record.email }),
         }}
         columns={columns}
-        dataSource={filteredUsers.map((u, i) => ({ key: u.email, ...u }))}
+        dataSource={filteredUsers.reverse().map((u, i) => ({ key: u.email, ...u }))}
         loading={loading}
         bordered
         pagination={{ pageSize: 10 }}

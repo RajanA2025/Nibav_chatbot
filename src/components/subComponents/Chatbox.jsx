@@ -272,7 +272,7 @@ import chatbotlogo from "../../assets/chatlogo.png";
 const FloatingChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [registerData, setRegisterData] = useState({ email: '', phone: '', intent: 'N/A' });
+  const [registerData, setRegisterData] = useState({ email: '', phone: '', intent: 'N/A',country:'India' });
   const [formErrors, setFormErrors] = useState({ email: '', phone: '' });
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
@@ -341,8 +341,9 @@ const FloatingChatBot = () => {
       params.append('email', registerData.email);
       params.append('phone', registerData.phone);
       params.append('intent', registerData.intent);
+      params.append('country',registerData.country)
 
-      const res = await axios.post(`http://65.0.113.12:8000/user/register`, params, {
+      const res = await axios.post(`http://3.110.224.17:8000/user/register`, params, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
@@ -376,7 +377,7 @@ const FloatingChatBot = () => {
       params.append('email', emailId);
       params.append('user_query', message);
 
-      const res = await axios.post(`http://65.0.113.12:8000/chat`, params, {
+      const res = await axios.post(`http://3.110.224.17:8000/chat`, params, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
@@ -527,8 +528,21 @@ const FloatingChatBot = () => {
                       maxLength={10}
                       placeholder="Enter 10-digit number"
                     />
+                    
                   </Form.Item>
-                  <Button type="primary" block onClick={handleRegister}>Register</Button>
+                  <Form.Item label="Country" validateStatus={formErrors.country ? 'error' : ''} help={formErrors.country}>
+                    <Input
+                      type="text"
+                      value={registerData.country}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setRegisterData({ ...registerData, country: value });
+                      }}
+                      // maxLength={10}
+                      placeholder="eg : India"
+                    />
+                  </Form.Item>
+                  <Button type="primary" style={{backgroundColor:"black"}} block onClick={handleRegister}>Register</Button>
                 </Form>
               </>
             ) : (

@@ -7,7 +7,7 @@
 // import mammoth from "mammoth";
 
 
-// const API_URL = "http://65.0.113.12:8000";
+// const API_URL = "http://3.110.224.17:8000";
 
 // const AdminActivity = () => {
 //   const [files, setFiles] = useState([]);
@@ -198,7 +198,7 @@ import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { useAppContext } from '../../../context/AppContext';
-const API_URL = "http://65.0.113.12:8000";
+const API_URL = "http://3.110.224.17:8000";
 
 const AdminActivity = () => {
   // const [files, setFiles] = useState([]);

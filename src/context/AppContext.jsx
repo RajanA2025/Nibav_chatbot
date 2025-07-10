@@ -4,7 +4,7 @@ import axios from 'axios';
 import { message } from 'antd';
 
 const AppContext = createContext();
-export const API_URL = "http://65.0.113.12:8000";
+export const API_URL = "http://3.110.224.17:8000";
 
 export const AppProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
@@ -19,7 +19,6 @@ export const AppProvider = ({ children }) => {
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   const [historyLoading, setHistoryLoading] = useState(false);
 const [questions, setQuestions] = useState([])
-console.log('questions', questions)
   
   const fetchchatUsers = async () => {
     setLoading(true);
@@ -39,7 +38,7 @@ console.log('questions', questions)
     try {
       const res = await axios.get(`${API_URL}/users/list`);
       setUsers(res.data.users || []);
-      setLastUpdated(Date.now());
+      // setLastUpdated(Date.now());
     } catch (error) {
     //   message.error("Failed to fetch users Data");
     } finally {
@@ -55,7 +54,7 @@ console.log('questions', questions)
       setDailyChats(res.data.daily[0].total_chats || 0);
       setweeklyChats(res.data.weekly.total_chats || 0);
       setmonthChats(res.data.monthly.total_chats || 0);
-      setLastUpdated(Date.now());
+      // setLastUpdated(Date.now());
     } catch (error) {
     //   message.error("Failed to fetch users Data");
     } finally {
@@ -83,7 +82,7 @@ console.log('questions', questions)
     try {
       const res = await axios.get(`${API_URL}/admin/files`);
       setFiles(res.data.files || []);
-      setLastUpdated(Date.now());
+      // setLastUpdated(Date.now());
     } catch (error) {
     //   message.error("Failed to fetch files Data");
     } finally {
@@ -98,7 +97,7 @@ console.log('questions', questions)
         params: { email },
       });
       setChatHistory(res.data.history || []);
-      setLastUpdated(Date.now());
+      // setLastUpdated(Date.now());
     } catch (error) {
       message.error("Failed to fetch chat history Data");
     } finally {

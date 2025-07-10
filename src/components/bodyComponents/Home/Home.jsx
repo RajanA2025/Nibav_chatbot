@@ -5,10 +5,7 @@ import UilBox from "@iconscout/react-unicons/icons/uil-box";
 import UilTruck from "@iconscout/react-unicons/icons/uil-truck";
 import UilCheckCircle from "@iconscout/react-unicons/icons/uil-check-circle";
 import InfoCard from "../../bodyComponents/InfoCard";
-import TotalSales from "./TotalSales";
-import SalesByCity from "./SalesByCity";
-import Channels from "./Channels";
-import TopSellingProduct from "./TopSellingProduct";
+
 import Chatbox from "../../subComponents/Chatbox";
 
 

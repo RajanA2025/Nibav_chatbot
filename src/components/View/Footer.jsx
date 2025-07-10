@@ -15,8 +15,8 @@ const Footer = ({ mt }) => {
         style={{ marginTop: mt ? mt : "0", minHeight: "15rem" }}
       >
         <div className="col-sm-6 col-md-3 p-3 d-flex flex-column justify-content-center justify-content-sm-left align-items-center align-items-sm-start">
-          <h4>Nibav_Management</h4>
-          <p>Learning Management Platform</p>
+          <h4>Nibav</h4>
+          {/* <p>Learning Management Platform</p> */}
           <p className="fw-bold">Follow Us</p>
           <div
             className="d-flex justify-content-between fs-3"
@@ -37,8 +37,8 @@ const Footer = ({ mt }) => {
           <h4>Resources</h4>
           <ul>
             <li>Home</li>
-            <li>Courses</li>
-            <li>Departments</li>
+            <li>AboutUs</li>
+            <li>ContactUs</li>
           </ul>
         </div>
         <div className="col-sm-6 col-md-3 p- d-flex flex-column justify-content-center justify-content-sm-left align-items-center align-items-sm-start">
@@ -46,15 +46,15 @@ const Footer = ({ mt }) => {
           <ul>
             <li>
               <FaPhoneAlt />
-              &nbsp;+91 9876543210
+              &nbsp;+1 (213)322-1024
             </li>
             <li>
               <MdEmail />
-              &nbsp;Nibav_management@gmail.com
+              &nbsp;info@nibavlifts.us
             </li>
             <li>
               <CiLocationOn />
-              &nbsp;India, US, UAE
+              &nbsp;India, US
             </li>
           </ul>
         </div>
@@ -66,8 +66,8 @@ const Footer = ({ mt }) => {
           </Button>
         </div>
       </div>
-      <div style={{ width: "20%", height: "2rem" }} className="mt-2 mx-auto">
-        <p className="text-center fw-bold">&copy; &nbsp; Copyright 2024</p>
+      <div style={{ width: "30%", height: "2rem" }} className="mt-2 mx-auto">
+        <p className="text-center fw-bold"> Copyright © 2025 All Rights Reserved By Nibav Lifts</p>
       </div>
     </div>
   );

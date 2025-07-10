@@ -4,7 +4,7 @@
 // import Header from "../Header";
 // import axios from "axios";
 
-// const API_URL = "http://65.0.113.12:8000";
+// const API_URL = "http://3.110.224.17:8000";
 // const AdminLogin = () => {
 //   const navigate = useNavigate();
 
@@ -154,7 +154,7 @@ import Header from "../Header";
 import axios from "axios";
 import ForgotPassword from "./ForgotPassword";
 
-const API_URL = "http://65.0.113.12:8000";
+const API_URL = "http://3.110.224.17:8000";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -260,6 +260,7 @@ const [role, setRole] = useState("")
       message.success("Login successful!");
       localStorage.setItem("Role", res.data.role);
       localStorage.setItem("Auth", "true");
+      localStorage.setItem('emailId',input.email);
       setRole(res.data.role);
   
       if (res.data.role.toLowerCase() === "admin") {
