@@ -207,8 +207,8 @@ const Users = () => {
     ...baseColumns,
     {
       title: 'UpdatedBy',
-      dataIndex: 'Updated_By',
-      key: 'Updated_By'
+      dataIndex: 'updated_by',
+      key: 'updated_by'
     }
   ];
 
@@ -260,7 +260,7 @@ const Users = () => {
           getCheckboxProps: (record) => ({ disabled: !record.email }),
         }}
         columns={columns}
-        dataSource={filteredUsers.reverse().map((u, i) => ({ key: u.email, ...u }))}
+        dataSource={filteredUsers.map((u, i) => ({ key: u.email, ...u }))}
         loading={loading}
         bordered
         pagination={{ pageSize: 10 }}

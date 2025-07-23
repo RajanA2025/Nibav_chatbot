@@ -1,7 +1,4 @@
-
-
-import React, { useEffect, useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Table,
   Button,
@@ -11,6 +8,7 @@ import {
   Space,
   Popconfirm,
   Modal,
+  Select,
 } from 'antd';
 import {
   EditOutlined,
@@ -19,34 +17,34 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
+import { useAppContext } from '../../../context/AppContext';
+
+const { Option } = Select;
 
 const ViewUsers = () => {
-  const [loading, setLoading] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [search, setSearch] = useState('');
   const [form] = Form.useForm();
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
-  const API_URL = "http://3.110.224.17:8000";
-  const { fetchUsers ,users} = useAppContext();
-  
-const Role =localStorage.getItem("Role")
+  const API_URL = 'http://3.110.224.17:8000';
+  const { fetchUsers, users } = useAppContext();
+
   useEffect(() => {
     fetchUsers();
-  }, []);   
+  }, []);
 
   const handleDeleteUser = async (email) => {
     try {
-      await axios.request({
-        method: 'delete',
-        url: `${API_URL}/user/delete`,
+      await axios.delete(`${API_URL}/user/delete`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        data: new URLSearchParams({ email }),  // form-encoded body
+        data: new URLSearchParams({ email }),
       });
-  
+
       message.success('User deleted successfully');
       fetchUsers();
     } catch (error) {
@@ -54,35 +52,36 @@ const Role =localStorage.getItem("Role")
       message.error('Delete failed');
     }
   };
-  
 
   const handleModalSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const params = new URLSearchParams();
-      params.append('name', values.name);
-      params.append('email', values.email);
-      params.append('password', values.password);
-      params.append('role', "sales");
-
-
-      const headers = {
-       
-          accept: 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
+      const params = new URLSearchParams({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        role: values.role,
+      });
       
+
+      // const headers = { accept: 'application/json' };
+
       if (editingUser) {
-        await axios.put(`${API_URL}/user/update`, params, { headers });
+        await axios.put(`${API_URL}/user/update`, params, { 
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          } });
         message.success('User updated');
       } else {
-        await axios.post(`${API_URL}/user/create`, params, { headers });
+        await axios.post(`${API_URL}/user/create`, params, {  headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }  });
         message.success('User added');
       }
 
-      setIsModalOpen(false);
-      setEditingUser(null);
-      form.resetFields();
+      closeModal();
       fetchUsers();
     } catch (error) {
       message.error('Submission failed');
@@ -106,12 +105,18 @@ const Role =localStorage.getItem("Role")
       await axios.post(`${API_URL}/user/send-credentials`, {
         email: user.email,
         name: user.name,
-        password: user.password, // Make sure you have this field
+        password: user.password,
       });
       message.success('Email sent successfully');
     } catch (error) {
       message.error('Failed to send email');
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingUser(null);
+    form.resetFields();
   };
 
   const filteredUsers = users.filter((user) =>
@@ -135,14 +140,11 @@ const Role =localStorage.getItem("Role")
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
-          {record.role === "sales" && (
-            <Button
-              type="default"
-              onClick={() => handleSendEmail(record)}
-            >
+          {/* {record.role === 'sales' && (
+            <Button type="default" onClick={() => handleSendEmail(record)}>
               Send Email
             </Button>
-          )}
+          )} */}
         </Space>
       ),
     },
@@ -154,7 +156,7 @@ const Role =localStorage.getItem("Role")
 
       <Space style={{ marginBottom: 16 }}>
         <Input
-          placeholder="Search by email or phone"
+          placeholder="Search by email or name"
           prefix={<SearchOutlined />}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -175,11 +177,7 @@ const Role =localStorage.getItem("Role")
       <Modal
         title={editingUser ? 'Edit User' : 'Create User'}
         open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setEditingUser(null);
-          form.resetFields();
-        }}
+        onCancel={closeModal}
         onOk={handleModalSubmit}
         okText="Save"
         destroyOnClose
@@ -192,13 +190,7 @@ const Role =localStorage.getItem("Role")
           >
             <Input />
           </Form.Item>
-          {/* <Form.Item
-            label="Phone"
-            name="phone"
-            rules={[{ required: true, message: 'Please enter phone' }]}
-          >
-            <Input />
-          </Form.Item> */}
+
           <Form.Item
             label="Email"
             name="email"
@@ -209,6 +201,18 @@ const Role =localStorage.getItem("Role")
               title={editingUser ? 'Email cannot be changed' : ''}
             />
           </Form.Item>
+
+          <Form.Item
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: 'Please select a role' }]}
+          >
+            <Select placeholder="Select a role">
+              <Option value="admin">Admin</Option>
+              <Option value="sales">Sales</Option>
+            </Select>
+          </Form.Item>
+
           <Form.Item
             label="Password"
             name="password"
@@ -223,4 +227,3 @@ const Role =localStorage.getItem("Role")
 };
 
 export default ViewUsers;
-

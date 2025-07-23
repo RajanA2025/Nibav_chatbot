@@ -154,7 +154,7 @@ import Header from "../Header";
 import axios from "axios";
 import ForgotPassword from "./ForgotPassword";
 
-const API_URL = "http://3.110.224.17:8000";
+const API_URL = "http://3.108.3.112:8000";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
